@@ -1,0 +1,29 @@
+{
+  "name": "peakfit",
+  "version": "1.0.0",
+  "description": "Aplicacion de linea de comandos que consulta y maneja planes nutritivos y de entrenamiento ",
+  "keywords": [
+    "nodejs"
+  ],
+  "homepage": "https://github.com/danielAVAR/peakfit#readme",
+  "bugs": {
+    "url": "https://github.com/danielAVAR/peakfit/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danielAVAR/peakfit.git"
+  },
+  "license": "ISC",
+  "author": "danielAVAR",
+  "type": "module",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "start"
+  },
+  "dependencies": {
+    "chalk": "^6.0.0",
+    "inquirer": "^14.2.2",
+    "mysql2": "^3.24.4"
+  }
+}
