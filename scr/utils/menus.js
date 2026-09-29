@@ -1,340 +1,115 @@
-import inquirer from 'inquirer';    
-import { creacion_cliente } from '../prompts/crear_clientes.js';
 
+import inquirer from 'inquirer';
+import chalk from 'chalk';
+import { ErrorValidacion } from '../validators/validador.js';
+import { ErrorNegocio } from './errores.js';
+import { error } from './consola.js';
+import { pausar } from '../prompts/comunes.js';
+import * as clientes from '../prompts/clientes.js';
+import * as planes from '../prompts/planes.js';
+import * as seguimiento from '../prompts/seguimiento.js';
+import * as nutricion from '../prompts/nutricion.js';
+import * as finanzas from '../prompts/finanzas.js';
 
-// MENUS PRINCIPALES 
-
-async function menu_start () {
-   const answers = await inquirer .prompt([
-    {
-        type: 'confirm',
-        name:'empezar',
-        message: `       
+const banner = (texto, cara = ':D') => chalk.cyan(`
         ╔══════════════════════════════════════╗
         ║                                      ║
-        ║              \\  O  /                 ║
+        ║              \\ ${cara.padEnd(2)}  /                 ║
         ║               \\ | /                  ║
         ║        ════════\\|/════════           ║
         ║                / \\                   ║
         ║               /   \\                  ║
         ║                                      ║
-        ║            P E A K F I T             ║
+        ║${texto.padStart(19 + Math.floor(texto.length / 2)).padEnd(38)}║
         ║                                      ║
-        ╚══════════════════════════════════════╝
-        
-        
-        
-        
-        START?`,
-        default: ''
-     }
-  ])
-  
-    if(answers.empezar){
-     await main_menu();
-    }else if(answers.empezar !== true){
-      console.log("CLOSING");
-    }
-    }
+        ╚══════════════════════════════════════╝`);
 
+
+async function ejecutar(accion) {
+    try {
+        await accion();
+    } catch (e) {
+        if (e.name === 'ExitPromptError') throw e;           
+        if (e instanceof ErrorValidacion || e instanceof ErrorNegocio) error(e.message);
+        else error(`Unexpected error: ${e.message}`);
+    }
+    await pausar();
+}
+
+async function correrMenu(textoBanner, cara, opciones) {
+    while (true) {
+        const { indice } = await inquirer.prompt([{
+            type: 'select', name: 'indice', message: banner(textoBanner, cara) + '\n',
+            choices: [
+                ...opciones.map((o, i) => ({ name: `+  ${o.nombre}`, value: i })),
+                { name: '+  BACK', value: -1 }
+            ]
+        }]);
+        if (indice === -1) return;
+        await ejecutar(opciones[indice].accion);
+    }
+}
+
+const menu_clientes = () => correrMenu('C L I E N T S', ':>', [
+    { nombre: 'CREATE CLIENT',     accion: clientes.crearCliente },
+    { nombre: 'LIST CLIENTS',      accion: clientes.listarClientes },
+    { nombre: 'UPDATE CLIENT',     accion: clientes.actualizarCliente },
+    { nombre: 'DEACTIVATE CLIENT', accion: clientes.desactivarCliente }
+]);
+
+const menu_entrenamiento = () => correrMenu('T R A I N I N G', ':D', [
+    { nombre: 'CREATE PLAN',              accion: planes.crearPlan },
+    { nombre: 'LIST PLANS',               accion: planes.listarPlanes },
+    { nombre: 'ASSIGN PLAN TO CLIENT',    accion: planes.asignarPlan },
+    { nombre: 'LIST CLIENT CONTRACTS',    accion: planes.listarContratos },
+    { nombre: 'RENEW PLAN',               accion: planes.renovarPlan },
+    { nombre: 'CANCEL PLAN',              accion: planes.cancelarPlan },
+    { nombre: 'FINISH PLAN',              accion: planes.finalizarPlan }
+]);
+
+const menu_progreso = () => correrMenu('P R O G R E S S', ':)', [
+    { nombre: 'REGISTER WEEKLY PROGRESS', accion: seguimiento.registrarAvance },
+    { nombre: 'VIEW PROGRESS',            accion: seguimiento.verProgreso },
+    { nombre: 'DELETE PROGRESS RECORD',   accion: seguimiento.eliminarRegistro }
+]);
+
+const menu_nutricion = () => correrMenu('N U T R I T I O N', ':P', [
+    { nombre: 'CREATE FOOD PLAN',    accion: nutricion.crearPlanAlimentacion },
+    { nombre: 'REGISTER FOODS',      accion: nutricion.registrarAlimentos },
+    { nombre: 'ADD FOOD TO CATALOG', accion: nutricion.crearAlimento },
+    { nombre: 'WEEKLY REPORT',       accion: nutricion.reporteSemanal }
+]);
+
+const menu_balance = () => correrMenu('B A L A N C E', '$_$', [
+    { nombre: 'REGISTER INCOME (INDIVIDUAL SESSION)', accion: finanzas.registrarSesionIndividual },
+    { nombre: 'REGISTER EXPENSE',                     accion: finanzas.registrarEgreso },
+    { nombre: 'VIEW BALANCE',                         accion: finanzas.consultarBalance }
+]);
 
 async function main_menu() {
-  const answers = await inquirer.prompt([{
-    type: "rawlist",
-    name: "choose_menus",
-    message: `
-        ╔══════════════════════════════════════╗
-        ║                                      ║
-        ║              \\ :D  /                 ║
-        ║               \\ | /                  ║
-        ║        ════════\\|/════════           ║
-        ║                / \\                   ║
-        ║               /   \\                  ║
-        ║                                      ║
-        ║            M   E   N   U             ║
-        ║                                      ║
-        ╚══════════════════════════════════════╝`,
-    choices: ["+  PROGRESS", "+  NUTRITION ", "+  TRAINING PLANS", "+  CLIENTS", "+  BALANCE",  "+  BACK"]
-  }])
-
-    if (answers.choose_menus === "+  PROGRESS") {
-    menu_progeso();
-
-  } else if (answers.choose_menus === "+  NUTRITION ") {
-    menu_nutricion();
-
-  } else if (answers.choose_menus === "+  TRAINING PLANS") {
-    menu_entrenamiento();
-
-  } else if (answers.choose_menus === "+  CLIENTS") {
-    menu_clientes();
-  } else if (answers.choose_menus === "+  BALANCE") {
-    menu_balance();
-  } else if (answers.choose_menus === "+  BACK") {
-    menu_start();
-  }
-  }
-
-  
-
-
-
-
-// MANEJO CLIENTES 
-async function menu_clientes() {
-  const answers = await inquirer.prompt([{
-    type: "rawlist",
-    name: "choose_menus",
-    message: `
-        ╔══════════════════════════════════════╗
-        ║             V         V              ║
-        ║              \\ :>  /                 ║
-        ║               \\ | /                  ║
-        ║        ════════\\|/════════           ║
-        ║                / \\                   ║
-        ║               /   \\                  ║
-        ║                                      ║
-        ║         C   L  I  E  N  T  S         ║
-        ║                                      ║
-        ╚══════════════════════════════════════╝`,
-    choices: ["+  CREATE CLIENTS", "+  LIST CLIENTS", "+  UPDATE CLIENTS", "+  ELIMINATE CLIENTS", "+  BACK"]
-  }])
-
-    if (answers.choose_menus === "+  CREATE CLIENTS") {
-      menu_crear_clientes()
-
-  } else if (answers.choose_menus === "+  LIST CLIENTS") {
-    console.log("YAY2");
-
-  } else if (answers.choose_menus === "+  UPDATE CLIENTS") {
-    console.log("TRAIN PLANS");
-
-  } else if (answers.choose_menus === "+  ELIMINATE CLIENTS") {
-    console.log("CLIENTS");
-
-  } else if (answers.choose_menus === "+  BACK") {
-    main_menu();
-  }
+    while (true) {
+        const { opcion } = await inquirer.prompt([{
+            type: 'select', name: 'opcion', message: banner('M   E   N   U') + '\n',
+            choices: [
+                { name: '+  PROGRESS',       value: menu_progreso },
+                { name: '+  NUTRITION',      value: menu_nutricion },
+                { name: '+  TRAINING PLANS', value: menu_entrenamiento },
+                { name: '+  CLIENTS',        value: menu_clientes },
+                { name: '+  BALANCE',        value: menu_balance },
+                { name: '+  EXIT',           value: null }
+            ]
+        }]);
+        if (opcion === null) return;
+        await opcion();
+    }
 }
 
-
-async function menu_crear_clientes() {
-console.log( `
-        ╔══════════════════════════════════════╗
-        ║             V         V              ║
-        ║              \\ :>  /                 ║
-        ║               \\ | /                  ║
-        ║        ════════\\|/════════           ║
-        ║                / \\                   ║
-        ║               /   \\                  ║
-        ║                                      ║
-        ║         C   L  I  E  N  T  S         ║
-        ║                                      ║
-        ╚══════════════════════════════════════╝`)
-  creacion_cliente();
+export async function menu_start() {
+    const { empezar } = await inquirer.prompt([{
+        type: 'confirm', name: 'empezar', default: true,
+        message: banner('P E A K F I T', 'O ') + '\n\n        START?'
+    }]);
+    if (!empezar) return console.log('CLOSING');
+    await main_menu();
+    console.log(chalk.cyan('\nSee you next time! 💪'));
 }
-
-async function menu_listar_clientes() {
-  
-}
-
-async function menu_actualizar_clientes() {
-  
-}
-
-async function menu_eliminar_clientes() {
-  
-}
-
-
-
-
-
-//MANEJO PLANES DE ENTRENAMIENTO 
-
-async function menu_entrenamiento() {
-  const answers = await inquirer.prompt([{
-    type: "rawlist",
-    name: "choose_menus",
-    message: `
-        ╔══════════════════════════════════════╗
-        ║                                      ║
-        ║              \\ >:)  /                ║
-        ║               \\ | /                  ║
-        ║        WWWWWWWW\\|/WWWWWWWWW          ║
-        ║                / \\                   ║
-        ║               /   \\                  ║
-        ║                                      ║
-        ║        T  R  A  I  N  I  N  G        ║
-        ║            P  L  A  N  S             ║
-        ╚══════════════════════════════════════╝`,
-    choices: ["+  CREATE PLAN", "+  RENOVATE PLAN", "+  CANCEL PLAN", "+  FINALIZE PLAN", "+  BACK"]
-  }])
-
-    if (answers.choose_menus === "+  CREATE PLAN") {
-    console.log("YAY");
-
-  } else if (answers.choose_menus === "+  RENOVATE PLAN") {
-    console.log("YAY2");
-
-  } else if (answers.choose_menus === "+  CANCEL PLAN") {
-    console.log("TRAIN PLANS");
-
-  } else if (answers.choose_menus === "+  FINALIZE PLAN") {
-    console.log("CLIENTS");
-
-  } else if (answers.choose_menus === "+  BACK") {
-    main_menu();
-  }
-}
-
-
-async function menu_crear_plan() {
-  
-}
-
-async function menu_renovar_plan() {
-  
-}
-
-async function menu_cancelar_plan() {
-  
-}
-
-async function menu_finalizar_plan() {
-  
-}
-
-//MANEJO NUTRICION
-
-async function menu_nutricion() {
-  const answers = await inquirer.prompt([{
-    type: "rawlist",
-    name: "choose_menus",
-    message: `
-        ╔══════════════════════════════════════╗
-        ║                                      ║
-        ║              \\  +  /                ║
-        ║               \\ | /                  ║
-        ║        ++++++++\\|/+++++++++          ║
-        ║                / \\                   ║
-        ║               /   \\                  ║
-        ║                                      ║
-        ║       N  U  T  R  I  T  I  O  N      ║
-        ║                                      ║
-        ╚══════════════════════════════════════╝`,
-    choices: ["+  CREATE NUTRITION PLAN", "+  WEEKLY REPORT", "+  BACK"]
-  }])
-
-    if (answers.choose_menus === "+  CREATE NUTRITION PLAN") {
-    console.log("YAY");
-
-  } else if (answers.choose_menus === "+  WEEKLY REPORT") {
-
-
-  } else if (answers.choose_menus === "+  BACK") {
-    main_menu();
-  }
-}
-
-
-async function menu_consultar_reporte_semanal() {
-  
-}
-
-async function menu_crea_plan_alimentacion() {
-  
-}
-
-
-
-
-//MANEJO PROGRESO 
-
-async function menu_progeso() {
-  const answers = await inquirer.prompt([{
-    type: "rawlist",
-    name: "choose_menus",
-    message: `
-        ╔══════════════════════════════════════╗
-        ║                                      ║
-        ║              \\ :O  /                 ║
-        ║               \\ | /                  ║
-        ║        ~~~~~~~~\\|/~~~~~~~~~          ║
-        ║                / \\                   ║
-        ║               /   \\                  ║
-        ║                                      ║
-        ║        P  R  O  G  R  E  S  S        ║
-        ║                                      ║
-        ╚══════════════════════════════════════╝`,
-    choices: ["+  REGISTER WEEKLY PROGRESS", "+  VISUALIZE PROGRESS", "+  ELIMINATE", "+  BACK"]
-  }])
-
-    if (answers.choose_menus === "+  REGISTER WEEKLY PROGRESS") {
-    console.log("YAY");
-
-  } else if (answers.choose_menus === "+  VISUALIZE PROGRESS") {
-    console.log("YAY2");
-
-  } else if (answers.choose_menus === "+  ELIMINATE") {
-    console.log("TRAIN PLANS");
-
-  } else if (answers.choose_menus === "+  BACK") {
-    main_menu();
-  }
-}
-
-async function menu_registrar_avances_semanales() {
-  
-}
-
-async function menu_visualizar_progreso() {
-  
-}
-
-async function menu_elimnar_registro_avances() {
-  
-}
-
-// MANEJO BALANCE
-
-async function menu_balance() {
-  const answers = await inquirer.prompt([{
-    type: "rawlist",
-    name: "choose_menus",
-    message: `
-        ╔══════════════════════════════════════╗
-        ║                                      ║
-        ║              \\  $  /                 ║
-        ║               \\ | /                  ║
-        ║        <<<<<<<<\\|/>>>>>>>>>          ║
-        ║                / \\                   ║
-        ║               /   \\                  ║
-        ║                                      ║
-        ║          B  A  L  A  N  C  E         ║
-        ║                                      ║
-        ╚══════════════════════════════════════╝`,
-    choices: ["+  INCOME", "+  EXPENSES", "+  BACK"]
-  }])
-
-    if (answers.choose_menus === "+  REGISTER WEEKLY PROGRESS") {
-    console.log("YAY");
-
-  } else if (answers.choose_menus === "+  VISUALIZE PROGRESS") {
-    console.log("YAY2");
-
-  } else if (answers.choose_menus === "+  BACK") {
-    main_menu();
-  }
-}
-
-async function menu_ingresos() {
-  
-}
-
-async function menu_egresos() {
-  
-}
-    
-
-export {menu_start};

@@ -1,18 +1,7 @@
--- INDICE DE BASES DE DATOS 
---  1. cliente
---  2. plan_entrenamiento
---  3. contrato               
---  4. seguimiento_fisico
---  5. foto_seguimiento
---  6. plan_alimentacion
---  7. alimento
---  8. registro_alimento
---  9. categoria_movimiento
--- 10. movimiento_financiero 
-CREATE DATABASE IF NOT EXISTS gimnasio CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE gimnasio;
+CREATE DATABASE IF NOT EXISTS peakfit CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE peakfit;
 
--- 1. CLIENTE
+-- CLIENTE
 CREATE TABLE cliente (
     id                  INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     nombre              VARCHAR(100) NOT NULL,
@@ -23,7 +12,7 @@ CREATE TABLE cliente (
     created_at          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- 2. PLAN DE ENTRENAMIENTO
+-- PLAN DE ENTRENAMIENTO
 
 CREATE TABLE plan_entrenamiento (
     id             INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
@@ -34,7 +23,7 @@ CREATE TABLE plan_entrenamiento (
     precio_base    DECIMAL(10,2) NOT NULL CHECK (precio_base >= 0)
 ) ENGINE=InnoDB;
 
--- 3. CONTRATO 
+-- CONTRATO 
 CREATE TABLE contrato (
     id                  INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     cliente_id          INT UNSIGNED NOT NULL,
@@ -53,7 +42,7 @@ CREATE TABLE contrato (
     UNIQUE KEY uq_contrato_cliente (id, cliente_id)   -- respalda la FK compuesta de movimiento_financiero
 ) ENGINE=InnoDB;
 
--- 4. SEGUIMIENTO FÍSICO
+-- SEGUIMIENTO FÍSICO
 
 CREATE TABLE seguimiento_fisico (
     id              INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
@@ -72,7 +61,7 @@ CREATE TABLE seguimiento_fisico (
     FOREIGN KEY (contrato_id) REFERENCES contrato(id)
 ) ENGINE=InnoDB;
 
--- 5. FOTO DE SEGUIMIENTO (una medición puede tener varias fotos -> 1FN)
+-- FOTO DE SEGUIMIENTO 
 CREATE TABLE foto_seguimiento (
     id              INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     seguimiento_id  INT UNSIGNED NOT NULL,
@@ -80,7 +69,7 @@ CREATE TABLE foto_seguimiento (
     FOREIGN KEY (seguimiento_id) REFERENCES seguimiento_fisico(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- 6. PLAN DE ALIMENTACIÓN
+-- PLAN DE ALIMENTACIÓN
 
 CREATE TABLE plan_alimentacion (
     id           INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
@@ -90,7 +79,7 @@ CREATE TABLE plan_alimentacion (
     FOREIGN KEY (contrato_id) REFERENCES contrato(id)
 ) ENGINE=InnoDB;
 
--- 7. ALIMENTO (catálogo; las calorías dependen solo del alimento)
+-- ALIMENTO
 CREATE TABLE alimento (
     id                   INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     nombre               VARCHAR(100) NOT NULL UNIQUE,
@@ -98,7 +87,7 @@ CREATE TABLE alimento (
     calorias_por_unidad  DECIMAL(7,2) NOT NULL CHECK (calorias_por_unidad >= 0)
 ) ENGINE=InnoDB;
 
--- 8. REGISTRO DE ALIMENTOS POR DÍA
+-- REGISTRO DE ALIMENTOS POR DÍA
 CREATE TABLE registro_alimento (
     id                    INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     plan_alimentacion_id  INT UNSIGNED NOT NULL,
@@ -110,7 +99,7 @@ CREATE TABLE registro_alimento (
     FOREIGN KEY (alimento_id)          REFERENCES alimento(id)
 ) ENGINE=InnoDB;
 
--- 9. CATEGORÍA DE MOVIMIENTO
+-- CATEGORÍA DE MOVIMIENTO
 
 CREATE TABLE categoria_movimiento (
     id      TINYINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
@@ -120,12 +109,12 @@ CREATE TABLE categoria_movimiento (
 
 INSERT INTO categoria_movimiento (nombre, tipo) VALUES
     ('Mensualidad',        'INGRESO'),
-    ('Sesión individual',  'INGRESO'),
+    ('Sesion individual',  'INGRESO'),
     ('Servicios',          'EGRESO'),
     ('Suplementos',        'EGRESO'),
     ('Gasto operativo',    'EGRESO');
 
--- 10. MOVIMIENTO FINANCIERO (ingresos y egresos)
+-- MOVIMIENTO FINANCIERO (ingresos y egresos)
 
 CREATE TABLE movimiento_financiero (
     id            INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
@@ -140,3 +129,16 @@ CREATE TABLE movimiento_financiero (
     FOREIGN KEY (contrato_id, cliente_id) REFERENCES contrato(id, cliente_id)
 ) ENGINE=InnoDB;
 
+
+INSERT INTO plan_entrenamiento (nombre_plan, duracion_dias, metas_fisicas, nivel, precio_base) VALUES
+    ('Inicio Fit',        30,  'Crear el habito y mejorar la condicion general', 'PRINCIPIANTE', 40.00),
+    ('Definicion 60',     60,  'Reducir grasa corporal y tonificar',             'INTERMEDIO',   85.00),
+    ('Fuerza Pro 90',     90,  'Ganar fuerza y masa muscular',                   'AVANZADO',    150.00);
+
+INSERT INTO alimento (nombre, unidad, calorias_por_unidad) VALUES
+    ('Huevo',            'unidad',  78.00),
+    ('Pechuga de pollo', '100g',   165.00),
+    ('Arroz cocido',     '100g',   130.00),
+    ('Avena',            '100g',   389.00),
+    ('Banano',           'unidad', 105.00),
+    ('Aguacate',         'unidad', 240.00);
