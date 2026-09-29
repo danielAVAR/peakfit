@@ -26,7 +26,6 @@ export async function listarPlanes() {
     })));
 }
 
-// Asignar plan => genera contrato + pago automaticamente (una transaccion)
 export async function asignarPlan() {
     titulo('Assign plan to client');
     const clienteId = await elegirCliente();

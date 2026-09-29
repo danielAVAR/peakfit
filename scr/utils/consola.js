@@ -1,4 +1,3 @@
-// Utilidades de presentacion en consola (chalk = colores)
 import chalk from 'chalk';
 
 export const titulo  = (t) => console.log('\n' + chalk.bold.cyan(`== ${t} ==`));

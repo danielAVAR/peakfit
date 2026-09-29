@@ -1,8 +1,4 @@
-// SERVICIO DE SEGUIMIENTO FISICO
-//  ACCIONES CRITICAS:
-//   - registrarAvance: seguimiento + sus fotos se guardan juntos (transaccion).
-//   - eliminarRegistro: solo se permite si el contrato sigue ACTIVO; si no, se hace ROLLBACK
-//     y no se toca nada (un contrato cancelado/finalizado conserva su historia consistente).
+
 import dayjs from 'dayjs';
 import { SeguimientoFisico } from '../models/seguimiento_fisico.js';
 import { FotoSeguimiento } from '../models/foto_seguimiento.js';

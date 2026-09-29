@@ -1,6 +1,3 @@
-// CONTENEDOR DE DEPENDENCIAS (composition root)
-// Es el UNICO lugar donde se "arman" las piezas: repositorios -> servicios.
-// Los servicios no crean sus repositorios: los reciben (Inversion de Dependencias, la "D" de SOLID).
 import { ClienteRepositorio } from './repositories/cliente_repo.js';
 import { PlanEntrenamientoRepositorio } from './repositories/plan_entrenamiento_repo.js';
 import { ContratoRepositorio } from './repositories/contrato_repo.js';

@@ -1,4 +1,3 @@
-// Piezas reutilizables de los prompts (inquirer): validacion, selectores de cliente/contrato, pausa.
 import inquirer from 'inquirer';
 import dayjs from 'dayjs';
 import { validarCampo } from '../validators/validador.js';
@@ -7,14 +6,13 @@ import { aviso } from '../utils/consola.js';
 
 export const hoy = () => dayjs().format('YYYY-MM-DD');
 
-// Convierte una regla del modelo en la funcion `validate` que inquirer entiende.
-// Asi el usuario ve el error MIENTRAS escribe, con las mismas reglas del modelo.
+
 export const validador = (nombre, regla) => (valor) => {
     try { validarCampo(nombre, valor, regla); return true; }
     catch (e) { return e.message; }
 };
 
-// Crea una pregunta de tipo "input" tomando la regla directamente del esquema de un modelo
+
 export const preguntaModelo = (Modelo, campo, mensaje, extra = {}) => ({
     type: 'input', name: campo, message: mensaje,
     validate: validador(campo, Modelo.esquema[campo]), ...extra
@@ -55,7 +53,6 @@ export async function elegirContrato(clienteId, { soloActivos = false } = {}) {
     return id;
 }
 
-// Atajo: cliente -> contrato en un solo paso
 export async function elegirClienteYContrato({ soloActivos = false, clientesActivos = true } = {}) {
     const clienteId = await elegirCliente({ soloActivos: clientesActivos });
     if (!clienteId) return null;

@@ -1,8 +1,4 @@
-// PATRON DE DISEÑO #1: FACTORY
-// Centraliza COMO se construye un contrato. Nadie mas calcula fechas, precio o condiciones:
-// asi el contrato "se genera automaticamente" siempre con las mismas reglas.
-// (Principio SRP: una sola razon para cambiar. Principio OCP: si mañana hay descuentos,
-//  se agregan aqui sin tocar los servicios.)
+
 import dayjs from 'dayjs';
 import { Contrato } from '../models/contrato.js';
 

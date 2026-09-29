@@ -23,7 +23,6 @@ export class FinanzasRepositorio extends RepositorioBase {
         return this.ejecutar(`SELECT * FROM categoria_movimiento WHERE tipo = ? ORDER BY id`, [tipo]);
     }
 
-    // Filtros opcionales (desde / hasta / cliente). Se arma el WHERE solo con lo que venga.
     async listarMovimientos({ desde, hasta, clienteId } = {}) {
         const { where, params } = this.#filtros({ desde, hasta, clienteId });
         return this.ejecutar(

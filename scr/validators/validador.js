@@ -1,6 +1,4 @@
-// VALIDADOR REUTILIZABLE
-// Una sola funcion (validarCampo) que sabe validar segun una "regla".
-// Los modelos solo describen sus reglas; no repiten codigo de validacion (principio DRY / SRP).
+
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat.js';
 
@@ -16,10 +14,7 @@ export class ErrorValidacion extends Error {
 const REGEX_CORREO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const REGEX_TELEFONO = /^[0-9+\-\s()]{7,20}$/;
 
-/**
- * regla = { tipo, requerido, min, max, largoMax, valores, noFutura }
- * tipo: 'texto' | 'entero' | 'decimal' | 'fecha' | 'correo' | 'telefono' | 'booleano' | 'enum' | 'url'
- */
+
 export function validarCampo(nombre, valor, regla) {
     const vacio = valor === null || valor === undefined || valor === '';
 

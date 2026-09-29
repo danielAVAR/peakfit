@@ -1,6 +1,4 @@
-// SERVICIO FINANCIERO
-// Los ingresos por planes (mensualidades) los crea ServicioPlanes dentro de su transaccion.
-// Aqui se registran: sesiones individuales (ingreso), egresos (servicios, suplementos, gastos) y balances.
+
 import { MovimientoFinanciero } from '../models/movimiento_financiero.js';
 import { conTransaccion } from '../utils/transaccion.js';
 import { ErrorNegocio } from '../utils/errores.js';
@@ -15,7 +13,6 @@ export class ServicioFinanzas {
         return this.repoFinanzas.listarCategorias(tipo);
     }
 
-    // Sesion individual: ingreso ligado a un cliente, sin contrato.
     async registrarSesionIndividual({ clienteId, monto, fecha, descripcion }) {
         return conTransaccion(async (conexion) => {
             const cliente = await this.repoClientes.buscarPorId(clienteId, conexion);

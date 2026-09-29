@@ -18,7 +18,6 @@ export class SeguimientoRepositorio extends RepositorioBase {
         return r.insertId;
     }
 
-    // Orden cronologico (fecha ascendente) + cuantas fotos tiene cada registro
     async listarPorContrato(contratoId) {
         return this.ejecutar(
             `SELECT s.id, s.fecha, s.peso_kg, s.grasa_corporal, s.cintura_cm, s.pecho_cm, s.cadera_cm,

@@ -13,7 +13,6 @@ export class ServicioNutricion {
         this.repoContratos = repoContratos;
     }
 
-    // El plan de alimentacion queda asociado al cliente A TRAVES del contrato (cliente + plan de entrenamiento)
     async crearPlanAlimentacion(datos) {
         const plan = new PlanAlimentacion(datos);
         return conTransaccion(async (conexion) => {
@@ -52,7 +51,7 @@ export class ServicioNutricion {
         });
     }
 
-    // Reporte de 7 dias desde fechaInicio: calorias por dia, promedio y total
+    // Reporte de 7 dias 
     async reporteSemanal(planId, fechaInicio) {
         const inicio = dayjs(fechaInicio, 'YYYY-MM-DD', true);
         if (!inicio.isValid()) throw new ErrorValidacion('La fecha debe tener el formato YYYY-MM-DD.');

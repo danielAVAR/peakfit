@@ -11,8 +11,7 @@ export class ContratoRepositorio extends RepositorioBase {
         return r.insertId;
     }
 
-    // bloquear = true => "SELECT ... FOR UPDATE": nadie mas puede modificar esta fila hasta
-    // que termine la transaccion. Evita, por ejemplo, cancelar y renovar el mismo contrato a la vez.
+ 
     async buscarPorId(id, conexion, { bloquear = false } = {}) {
         const filas = await this.ejecutar(
             `SELECT * FROM contrato WHERE id = ? ${bloquear ? 'FOR UPDATE' : ''}`, [id], conexion);

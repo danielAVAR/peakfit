@@ -1,12 +1,4 @@
-// SERVICIO DE PLANES Y CONTRATOS
-// ============================================================================
-//  ACCIONES CRITICAS de este archivo (todas usan transaccion => todo o nada):
-//   1. asignarPlan   : crea CONTRATO + INGRESO (pago). Si falla el pago, no queda contrato.
-//   2. renovarPlan   : marca el contrato viejo RENOVADO + crea contrato nuevo + INGRESO.
-//   3. cancelarPlan  : borra el SEGUIMIENTO + marca contrato CANCELADO (rollback logico del plan).
-//   4. finalizarPlan : cambia el estado a FINALIZADO.
-//  Consistencia: SELECT ... FOR UPDATE bloquea el contrato mientras se opera sobre el.
-// ============================================================================
+
 import { PlanEntrenamiento } from '../models/plan_entrenamiento.js';
 import { ContratoFactory } from '../factories/contrato_factory.js';
 import { MovimientoFactory } from '../factories/movimiento_factory.js';

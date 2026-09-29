@@ -1,5 +1,4 @@
-// PATRON DE DISEÑO #1 (parte 2): FACTORY de movimientos financieros.
-// Convierte un contrato en el ingreso que le corresponde.
+
 import dayjs from 'dayjs';
 import { MovimientoFinanciero } from '../models/movimiento_financiero.js';
 

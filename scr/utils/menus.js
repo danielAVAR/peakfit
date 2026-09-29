@@ -1,6 +1,4 @@
-// MENUS DE NAVEGACION
-// Cada menu es solo una lista de opciones: { nombre, accion }. Un unico "motor" (correrMenu)
-// los ejecuta todos. Para agregar una opcion nueva basta con agregar una linea (principio OCP).
+
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import { ErrorValidacion } from '../validators/validador.js';
@@ -26,13 +24,12 @@ const banner = (texto, cara = ':D') => chalk.cyan(`
         ║                                      ║
         ╚══════════════════════════════════════╝`);
 
-// Ejecuta una accion y convierte los errores esperados en mensajes amigables.
-// Los errores de validacion/negocio NO cierran el programa: se muestran y se vuelve al menu.
+
 async function ejecutar(accion) {
     try {
         await accion();
     } catch (e) {
-        if (e.name === 'ExitPromptError') throw e;             // Ctrl+C: que lo maneje app.js
+        if (e.name === 'ExitPromptError') throw e;           
         if (e instanceof ErrorValidacion || e instanceof ErrorNegocio) error(e.message);
         else error(`Unexpected error: ${e.message}`);
     }
