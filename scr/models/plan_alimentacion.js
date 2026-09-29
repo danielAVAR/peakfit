@@ -1,46 +1,10 @@
-export class PlanAlimentacion {
-    #id;
-    #contrato_id;
-    #nombre;
-    #descripcion;
+import { Modelo } from './modelo.js';
 
-    constructor({
-        id = null,
-        contrato_id = null,
-        nombre = null,
-        descripcion = null
-    } = {}) {
-        this.#id = id;
-        this.contrato_id = contrato_id;
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-    }
-
-    get id() {
-        return this.#id;
-    }
-
-    get contrato_id() {
-        return this.#contrato_id;
-    }
-
-    set contrato_id(value) {
-        this.#contrato_id = value;
-    }
-
-    get nombre() {
-        return this.#nombre;
-    }
-
-    set nombre(value) {
-        this.#nombre = value;
-    }
-
-    get descripcion() {
-        return this.#descripcion;
-    }
-
-    set descripcion(value) {
-        this.#descripcion = value;
-    }
+export class PlanAlimentacion extends Modelo {
+    static esquema = {
+        id:          { tipo: 'entero', min: 1 },
+        contrato_id: { tipo: 'entero', requerido: true, min: 1 },
+        nombre:      { tipo: 'texto', requerido: true, largoMax: 100 },
+        descripcion: { tipo: 'texto' }
+    };
 }

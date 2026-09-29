@@ -1,35 +1,9 @@
-export class CategoriaMovimiento {
-    #id;
-    #nombre;
-    #tipo;
+import { Modelo } from './modelo.js';
 
-    constructor({
-        id = null,
-        nombre = null,
-        tipo = null
-    } = {}) {
-        this.#id = id;
-        this.nombre = nombre;
-        this.tipo = tipo;
-    }
-
-    get id() {
-        return this.#id;
-    }
-
-    get nombre() {
-        return this.#nombre;
-    }
-
-    set nombre(value) {
-        this.#nombre = value;
-    }
-
-    get tipo() {
-        return this.#tipo;
-    }
-
-    set tipo(value) {
-        this.#tipo = value;
-    }
+export class CategoriaMovimiento extends Modelo {
+    static esquema = {
+        id:     { tipo: 'entero', min: 1 },
+        nombre: { tipo: 'texto', requerido: true, largoMax: 40 },
+        tipo:   { tipo: 'enum', requerido: true, valores: ['INGRESO', 'EGRESO'] }
+    };
 }

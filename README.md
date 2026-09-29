@@ -9,6 +9,9 @@ ya sea en sus planes de:
 
 
 --- 
+## VIDEO YOUTUBE
+
+https://youtu.be/Tuy8HB9Hao0
 
 
 
@@ -139,36 +142,108 @@ TECNOLOGIAS:
 - Los pagos se manejan con **transacciones reales** (transacción se hace al registrar?).
 - Se debe evidenciar en el código qué acciones son críticas y cómo se asegura la consistencia de los datos.
 
-# INSTRUCCIONES DE INSTALACION Y USO 
+# INSTRUCCIONES DE INSTALACION Y USO
 
 
+```bash
+# 1. Instalar  
+npm install
+
+# 2. Crear la base de datos con sus tablas y datos iniciales
+mysql -u root -p --default-character-set=utf8mb4 < scr/db/peakfitdb.sql
+
+# 3. Configurar credenciales: 
+cp .env.example .env     
+
+# 4. Ejecutar la aplicacion
+npm start
+
+```
 
 
+# ESTRUCTURA DE DATOS 
+
+![alt text](image.png)
 
 
+# ESTRUCTURA DEL PROYECTO
+```bash
+peakfit/
+├── app.js                         
+├── package.json                   
+├── .env.example                  
+├── .gitignore                      
+├── README.md                      
+├── IMAGES/
+│   └── image.js             
+└── scr/
+    ├── contenedor.js          
+    ├── config/
+    │   └── database.js             
+    ├── db/
+    │   └── peakfitdb.sql           
+    ├── models/                  
+    │   ├── modelo.js             
+    │   ├── cliente.js
+    │   ├── plan_entrenamiento.js
+    │   ├── contrato.js
+    │   ├── seguimiento_fisico.js
+    │   ├── foto_seguimiento.js
+    │   ├── plan_alimentacion.js
+    │   ├── alimento.js
+    │   ├── registro_alimento.js
+    │   ├── categoria_movimiento.js
+    │   └── movimiento_financiero.js
+    ├── validators/                
+    │   └── validador.js          
+    ├── repositories/              
+    │   ├── repositorio_base.js    
+    │   ├── cliente_repo.js
+    │   ├── plan_entrenamiento_repo.js
+    │   ├── contrato_repo.js
+    │   ├── seguimiento_repo.js
+    │   ├── nutricion_repo.js
+    │   └── finanzas_repo.js  automatica
+    │   ├── contrato_factory.js    
+    │   └── movimiento_factory.js   
+    ├── services/              
+    │   ├── service_clientes.js         
+    │   ├── service_planes.js            
+    │   ├── service_seguimiento_fisico.js  
+    │   ├── service_nutricion.js         
+    │   └── service_finanzas.js           
+    ├── prompts/               
+    │   ├── comunes.js
+    │   ├── clientes.js
+    │   ├── planes.js
+    │   ├── seguimiento.js
+    │   ├── nutricion.js
+    │   └── finanzas.js
+    └── utils/
+        ├── menus.js            
+        ├── transaccion.js        
+        ├── consola.js             
+        └── errores.js            
+  
+```
 
-# ESTRUCTURA DEL PROYECTO 
+Flujo de una accion: **menu -> prompt -> service -> repository -> MySQL**. Cada capa solo conoce a la siguiente.
 
+---
 
+# PRINCIPIOS SOLID APLICADOS
 
+- **S (Responsabilidad unica):** modelos validan, repositorios hacen SQL, servicios aplican reglas de negocio, prompts piden datos, menus navegan.
+- **O (Abierto/cerrado):** agregar una opcion al menu es agregar un objeto a una lista; agregar un campo al modelo es agregar una linea al esquema.
+- **L (Sustitucion de Liskov):** todos los modelos extienden `Modelo` y todos los repositorios extienden `RepositorioBase` y se usan de forma intercambiable.
+- **I (Segregacion de interfaces):** un repositorio y un servicio por dominio (clientes, planes, seguimiento, nutricion, finanzas), en vez de una clase gigante.
+- **D (Inversion de dependencias):** los servicios reciben sus repositorios por el constructor (`contenedor.js`); no los crean ellos mismos.
 
+---
 
+# PATRONES DE DISEÑO USADOS Y SU JUSTIFICACION
 
-# PRINCIPIOS SOLID APLICADOS 
+1. **Repository** (`scr/repositories/`): aisla todo el SQL. Los servicios piden "buscarPorId" sin saber como se guarda. Si se cambiara MySQL por otra base, solo cambian los repositorios.
+2. **Factory** (`scr/factories/`): `ContratoFactory` construye el contrato automaticamente (fecha fin = inicio + duracion, precio del plan, condiciones) y `MovimientoFactory` construye el ingreso que le corresponde. Garantiza que TODO contrato nace con las mismas reglas.
+3. *(complementarios)* **Inyeccion de dependencias** (`contenedor.js`) y una **funcion de Unit of Work** (`conTransaccion`) que agrupa operaciones en una transaccion.
 
-
-
-
-
-# PATRONES DE DISEÑO USADO Y SU JUSTIFICACION 
-
-
-
-# 
-
-
-
-PREGUNTAS
-
-- si el sistema se concentra en planes, como cabe la funcion de sesiones individuales?
-- el readme file de documentacion es differente al documento de planificacion?
