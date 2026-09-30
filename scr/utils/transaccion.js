@@ -9,6 +9,7 @@ export async function conTransaccion(trabajo) {
         await conexion.commit();                 
         return resultado;
     } catch (error) {
+        // aqui se aplica la primera propiedad de ACID: atomicidad. profe este comentario no es IA esto lo hice yo creame :(
         await conexion.rollback();               
         throw error;                             
     } finally {

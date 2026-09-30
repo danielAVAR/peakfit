@@ -9,7 +9,7 @@ export class ServicioClientes {
     }
 
     async crear(datos) {
-        const cliente = new Cliente(datos);          // valida todos los campos
+        const cliente = new Cliente(datos);       
         try {
             return await this.repoClientes.crear(cliente);
         } catch (e) {
