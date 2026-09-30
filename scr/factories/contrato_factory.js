@@ -1,4 +1,3 @@
-
 import dayjs from 'dayjs';
 import { Contrato } from '../models/contrato.js';
 

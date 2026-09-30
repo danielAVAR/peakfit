@@ -1,4 +1,3 @@
-
 import dayjs from 'dayjs';
 import { MovimientoFinanciero } from '../models/movimiento_financiero.js';
 

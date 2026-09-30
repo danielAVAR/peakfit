@@ -48,7 +48,7 @@ export class ServicioPlanes {
             const duplicado = await this.repoContratos.buscarActivoDeClienteYPlan(clienteId, planId, conexion);
             if (duplicado) throw new ErrorNegocio('El cliente ya tiene ese plan ACTIVO. Usa "Renew plan".');
 
-            // El contrato se genera AUTOMATICAMENTE (Factory)
+            // El contrato se genera 
             const contrato = ContratoFactory.crear({ cliente_id: clienteId, plan, fecha_inicio: fechaInicio });
             const contratoId = await this.repoContratos.crear(contrato, conexion);
 
