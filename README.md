@@ -7,6 +7,11 @@ ya sea en sus planes de:
 - NUTRICION
 
 
+SCRUM
+
+https://app.clickup.com/9014755542/v/l/t/9014755542
+
+
 
 --- 
 ## VIDEO YOUTUBE
