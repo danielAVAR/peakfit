@@ -44,4 +44,11 @@ export class ServicioClientes {
         if (!cliente.activo) throw new ErrorNegocio('El cliente ya estaba desactivado.');
         await this.repoClientes.desactivar(id);
     }
+
+    async respaldar(id) {
+        const cliente = await this.obtener(id);
+        if (!cliente.activo) throw new ErrorNegocio('El cliente esta desactivado.');
+        const ruta = './respaldo-clientes.json';
+        await this.repoClientes.respaldar(cliente, ruta);
+    }
 }

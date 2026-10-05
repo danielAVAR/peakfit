@@ -54,7 +54,8 @@ const menu_clientes = () => correrMenu('C L I E N T S', ':>', [
     { nombre: 'CREATE CLIENT',     accion: clientes.crearCliente },
     { nombre: 'LIST CLIENTS',      accion: clientes.listarClientes },
     { nombre: 'UPDATE CLIENT',     accion: clientes.actualizarCliente },
-    { nombre: 'DEACTIVATE CLIENT', accion: clientes.desactivarCliente }
+    { nombre: 'DEACTIVATE CLIENT', accion: clientes.desactivarCliente },
+    { nombre: 'RESPALDAR CLIENTE', accion: clientes.respaldarClientes }
 ]);
 
 const menu_entrenamiento = () => correrMenu('T R A I N I N G', ':D', [

@@ -63,3 +63,11 @@ export async function desactivarCliente() {
     await servicioClientes.desactivar(id);
     exito('Client deactivated.');
 }
+
+export async function respaldarClientes() {
+    titulo('Backup clients');
+    const id = await elegirCliente();
+    if (!id) return;
+    if (!(await confirmar('choose this client?'))) return;
+    await servicioClientes.respaldar(id);
+}
