@@ -80,10 +80,7 @@ export class ServicioPlanes {
         });
     }
 
-    // ---------- 3. CANCELAR PLAN (CRITICA) ----------
-    // "Rollback del seguimiento y del contrato": se elimina el seguimiento fisico del contrato
-    // y el contrato queda CANCELADO. Ambas cosas ocurren juntas o no ocurre ninguna.
-    // (El contrato no se borra: queda como evidencia y el ingreso historico sigue cuadrando.)
+    // ---------- 3. CANCELAR PLAN (CRITICA) ---------
     async cancelarPlan(contratoId) {
         return conTransaccion(async (conexion) => {
             const contrato = await this.#contratoActivoBloqueado(contratoId, conexion, 'cancelar');

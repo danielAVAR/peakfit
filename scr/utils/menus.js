@@ -111,5 +111,5 @@ export async function menu_start() {
     }]);
     if (!empezar) return console.log('CLOSING');
     await main_menu();
-    console.log(chalk.cyan('\nSee you next time! 💪'));
+    console.log(chalk.cyan('\nSee you next time! 💪💪💪💪💪💪💪💪💪💪💪💪💪💪💪💪💪💪💪'));
 }

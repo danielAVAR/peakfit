@@ -1,5 +1,3 @@
-// SERVICIO DE CLIENTES: reglas de negocio de clientes.
-// Recibe su repositorio por el constructor (Inyeccion de Dependencias => principio DIP).
 import { Cliente } from '../models/cliente.js';
 import { ErrorNegocio } from '../utils/errores.js';
 
